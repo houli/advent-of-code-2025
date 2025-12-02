@@ -6,6 +6,7 @@ import gleam/string
 import util
 
 pub fn main() -> Nil {
+  io.println("Day 1")
   io.println("Part 1: " <> int.to_string(part1()))
   io.println("Part 2: " <> int.to_string(part2()))
 }
