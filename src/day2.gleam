@@ -1,7 +1,9 @@
 import gleam/int
 import gleam/io
 import gleam/list
+import gleam/result
 import gleam/string
+import range
 import util
 
 pub fn main() -> Nil {
@@ -10,36 +12,30 @@ pub fn main() -> Nil {
   io.println("Part 2: " <> int.to_string(part2()))
 }
 
-type Range {
-  Range(start: Int, end: Int)
-}
-
 fn part1() -> Int {
-  util.real_input("02")
-  |> string.split(on: ",")
-  |> list.map(parse_line)
-  |> list.map(range_to_list)
-  |> list.flatten
+  let assert Ok(ranges) =
+    util.real_input("02")
+    |> string.split(on: ",")
+    |> list.map(range.from_string)
+    |> result.all
+
+  ranges
+  |> list.flat_map(range.to_list)
   |> list.filter(is_invalid_part_1)
   |> list.fold(0, int.add)
 }
 
 fn part2() -> Int {
-  util.real_input("02")
-  |> string.split(on: ",")
-  |> list.map(parse_line)
-  |> list.map(range_to_list)
-  |> list.flatten
+  let assert Ok(ranges) =
+    util.real_input("02")
+    |> string.split(on: ",")
+    |> list.map(range.from_string)
+    |> result.all
+
+  ranges
+  |> list.flat_map(range.to_list)
   |> list.filter(is_invalid_part_2)
   |> list.fold(0, int.add)
-}
-
-fn parse_line(line: String) -> Range {
-  let assert Ok(#(start_str, end_str)) = string.split_once(line, on: "-")
-  let assert Ok(start) = int.parse(start_str)
-  let assert Ok(end) = int.parse(end_str)
-
-  Range(start, end)
 }
 
 fn is_invalid_part_1(num: Int) -> Bool {
@@ -89,16 +85,5 @@ fn digit_patterns_loop(
         False -> digit_patterns_loop(num_str, length, digits_count + 1, acc)
       }
     }
-  }
-}
-
-fn range_to_list(range: Range) -> List(Int) {
-  range_to_list_loop(range.end, range.start, [])
-}
-
-fn range_to_list_loop(current: Int, start: Int, acc: List(Int)) -> List(Int) {
-  case current < start {
-    True -> acc
-    False -> range_to_list_loop(current - 1, start, [current, ..acc])
   }
 }
