@@ -21,9 +21,9 @@ pub fn new(first: Int, second: Int) {
 pub fn from_string(string: String) -> Result(Range, Nil) {
   use #(first_str, second_str) <- result.try(string.split_once(string, on: "-"))
   use first <- result.try(int.parse(first_str))
-  use second <- result.try(int.parse(second_str))
+  use second <- result.map(int.parse(second_str))
 
-  Ok(new(first, second))
+  new(first, second)
 }
 
 pub fn to_list(range: Range) -> List(Int) {
