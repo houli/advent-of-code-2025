@@ -7,11 +7,11 @@ pub opaque type Range {
   Range(start: Int, end: Int)
 }
 
-pub fn size(range: Range) {
+pub fn size(range: Range) -> Int {
   { range.end - range.start } + 1
 }
 
-pub fn new(first: Int, second: Int) {
+pub fn new(first: Int, second: Int) -> Range {
   case first >= second {
     True -> Range(start: second, end: first)
     False -> Range(start: first, end: second)
@@ -72,6 +72,6 @@ fn merge_list_loop(ranges: List(Range), acc: List(Range)) -> List(Range) {
   }
 }
 
-pub fn is_disjoint(range: Range, from other: Range) {
+pub fn is_disjoint(range: Range, from other: Range) -> Bool {
   range.end < other.start || other.end < range.start
 }
