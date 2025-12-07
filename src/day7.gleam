@@ -121,30 +121,29 @@ fn timeline_count_loop(
   splitters: Set(Point),
   cache: Dict(Point, Int),
 ) -> #(Int, Dict(Point, Int)) {
-  case dict.get(cache, point) {
-    Ok(num) -> #(num, cache)
-    Error(_) -> {
-      case point.y == max_y {
-        True -> #(1, dict.insert(cache, point, 1))
+  use <- result.lazy_unwrap(
+    dict.get(cache, point)
+    |> result.map(fn(num) { #(num, cache) }),
+  )
+
+  case point.y == max_y {
+    True -> #(1, dict.insert(cache, point, 1))
+    False -> {
+      let next = Point(x: point.x, y: point.y + 1)
+      case set.contains(splitters, next) {
+        True -> {
+          let left = Point(x: next.x - 1, y: next.y)
+          let right = Point(x: next.x + 1, y: next.y)
+          let #(left_res, cache) =
+            timeline_count_loop(max_y, left, splitters, cache)
+          let #(right_res, cache) =
+            timeline_count_loop(max_y, right, splitters, cache)
+          let total = left_res + right_res
+          #(total, dict.insert(cache, point, total))
+        }
         False -> {
-          let next = Point(x: point.x, y: point.y + 1)
-          case set.contains(splitters, next) {
-            True -> {
-              let left = Point(x: next.x - 1, y: next.y)
-              let right = Point(x: next.x + 1, y: next.y)
-              let #(left_res, cache) =
-                timeline_count_loop(max_y, left, splitters, cache)
-              let #(right_res, cache) =
-                timeline_count_loop(max_y, right, splitters, cache)
-              let total = left_res + right_res
-              #(total, dict.insert(cache, point, total))
-            }
-            False -> {
-              let #(res, cache) =
-                timeline_count_loop(max_y, next, splitters, cache)
-              #(res, dict.insert(cache, point, res))
-            }
-          }
+          let #(res, cache) = timeline_count_loop(max_y, next, splitters, cache)
+          #(res, dict.insert(cache, point, res))
         }
       }
     }
