@@ -32,7 +32,7 @@ fn part1() -> Int {
   |> iv.to_list
   |> list.sort(fn(a, b) { int.compare(b, a) })
   |> list.take(3)
-  |> list.fold(1, int.multiply)
+  |> int.product
 }
 
 fn part2() -> Int {

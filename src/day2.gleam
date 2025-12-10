@@ -22,7 +22,7 @@ fn part1() -> Int {
   ranges
   |> list.flat_map(range.to_list)
   |> list.filter(is_invalid_part_1)
-  |> list.fold(0, int.add)
+  |> int.sum
 }
 
 fn part2() -> Int {
@@ -35,7 +35,7 @@ fn part2() -> Int {
   ranges
   |> list.flat_map(range.to_list)
   |> list.filter(is_invalid_part_2)
-  |> list.fold(0, int.add)
+  |> int.sum
 }
 
 fn is_invalid_part_1(num: Int) -> Bool {

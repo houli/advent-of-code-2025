@@ -15,14 +15,14 @@ fn part1() -> Int {
   util.real_input("03")
   |> string.split(on: "\n")
   |> list.map(find_joltage_part_1)
-  |> list.fold(0, int.add)
+  |> int.sum
 }
 
 fn part2() -> Int {
   util.real_input("03")
   |> string.split(on: "\n")
   |> list.map(find_joltage_part_2)
-  |> list.fold(0, int.add)
+  |> int.sum
 }
 
 fn find_joltage_part_1(line: String) -> Int {
