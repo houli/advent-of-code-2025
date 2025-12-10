@@ -6,6 +6,7 @@ import day5
 import day6
 import day7
 import day8
+import day9
 
 pub fn main() -> Nil {
   day1.main()
@@ -16,4 +17,5 @@ pub fn main() -> Nil {
   day6.main()
   day7.main()
   day8.main()
+  day9.main()
 }

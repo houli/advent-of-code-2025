@@ -126,7 +126,8 @@ fn parse_input(lines: List(String)) -> List(Vector3) {
 }
 
 fn create_distances(vecs: List(Vector3)) -> List(#(Vector3, Vector3)) {
-  unique_pairs(vecs)
+  vecs
+  |> list.combination_pairs
   |> list.map(fn(pair) {
     let #(a, b) = pair
     #(a, b, distance_between(a, b))
@@ -149,13 +150,4 @@ fn distance_between(a: Vector3, b: Vector3) -> Float {
 
   let assert Ok(res) = int.square_root({ dx * dx } + { dy * dy } + { dz * dz })
   res
-}
-
-fn unique_pairs(vecs: List(Vector3)) -> List(#(Vector3, Vector3)) {
-  list.index_map(vecs, fn(a, i) {
-    vecs
-    |> list.drop(i + 1)
-    |> list.map(fn(b) { #(a, b) })
-  })
-  |> list.flatten
 }
