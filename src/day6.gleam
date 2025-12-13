@@ -7,11 +7,6 @@ import iv.{type Array}
 import range
 import util
 
-type Op {
-  Add
-  Mul
-}
-
 pub fn main() -> Nil {
   io.println("Day 6")
   io.println("Part 1: " <> int.to_string(part1()))
@@ -27,28 +22,21 @@ fn part1() -> Int {
   let numbers = lines |> iv.drop_last(1) |> number_lines_to_mat
   let assert Ok(ops) = lines |> iv.last |> result.map(parse_ops)
 
-  iv.index_fold(ops, 0, fn(acc, op, index) {
-    let identity_element = case op {
-      Add -> 0
-      Mul -> 1
-    }
-    let fun = case op {
-      Add -> int.add
-      Mul -> int.multiply
-    }
-
+  iv.index_map(ops, fn(op, index) {
     iv.map(numbers, fn(num_arr) {
       let assert Ok(num) = iv.get(num_arr, index)
       num
     })
-    |> iv.fold(identity_element, fun)
-    |> int.add(acc)
+    |> iv.to_list
+    |> op
   })
+  |> iv.to_list
+  |> int.sum
 }
 
 fn part2() -> Int {
   let lines =
-    util.real_input("06")
+    util.test_input("06")
     |> string.split(on: "\n")
     |> iv.from_list
 
@@ -58,17 +46,10 @@ fn part2() -> Int {
   iv.index_map(numbers, fn(num_arr, index) {
     let assert Ok(op) = iv.get(ops, index)
 
-    let identity_element = case op {
-      Add -> 0
-      Mul -> 1
-    }
-    let fun = case op {
-      Add -> int.add
-      Mul -> int.multiply
-    }
-    iv.fold(num_arr, identity_element, fun)
+    op(iv.to_list(num_arr))
   })
-  |> iv.fold(0, int.add)
+  |> iv.to_list
+  |> int.sum
 }
 
 fn number_lines_to_mat(lines: Array(String)) -> Array(Array(Int)) {
@@ -118,14 +99,14 @@ fn number_lines_to_mat_funky(lines: Array(String)) -> Array(Array(Int)) {
   |> iv.from_list
 }
 
-fn parse_ops(ops_string: String) -> Array(Op) {
+fn parse_ops(ops_string: String) -> Array(fn(List(Int)) -> Int) {
   ops_string
   |> string_split_variable_space
   |> iv.from_list
   |> iv.map(fn(op_str) {
     case op_str {
-      "+" -> Add
-      "*" -> Mul
+      "+" -> int.sum
+      "*" -> int.product
       _ -> panic as "Unknown op"
     }
   })

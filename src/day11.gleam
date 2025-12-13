@@ -1,4 +1,3 @@
-import gleam/bool
 import gleam/dict.{type Dict}
 import gleam/int
 import gleam/io
@@ -67,13 +66,12 @@ fn count_paths_to_out_with_extra_loop(
   connections: List(String),
   seen_dac: Bool,
   seen_fft: Bool,
-  cache: Dict(String, Int),
-) -> #(Int, Dict(String, Int)) {
+  cache: Dict(#(String, Bool, Bool), Int),
+) -> #(Int, Dict(#(String, Bool, Bool), Int)) {
   connections
   |> list.fold(#(0, cache), fn(acc, connection) {
     let #(current_count, current_cache) = acc
-    let cache_key =
-      connection <> bool.to_string(seen_dac) <> bool.to_string(seen_fft)
+    let cache_key = #(connection, seen_dac, seen_fft)
 
     use <- result.lazy_unwrap(
       dict.get(current_cache, cache_key)
